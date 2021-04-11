@@ -19,7 +19,7 @@ seed = 42
 
 raw_train_ds = tf.keras.preprocessing.text_dataset_from_directory('aclImdb/train', batch_size=batch_size, validation_split=0.2, subset='training',seed=seed)
 raw_val_ds = tf.keras.preprocessing.text_dataset_from_directory("aclImdb/train", batch_size=batch_size, validation_split=0.2, subset="validation", seed=seed)
-raw_test_ds = tf.keras.preprocessing.text_dataset_from_directory("aclImbd/test", batch_size=batch_size)
+raw_test_ds = tf.keras.preprocessing.text_dataset_from_directory("aclImdb/test", batch_size=batch_size)
 
 def custom_standardization(input_data):
     lowercase = tf.strings.lower(input_data)
@@ -42,3 +42,8 @@ vectorize_layer.adapt(train_text)
 def vectorize_text(text, label):
     text = tf.expand_dims(text, -1)
     return vectorize_layer(text), label
+
+train_ds = raw_train_ds.map(vectorize_text)
+val_ds = raw_val_ds.map(vectorize_text)
+test_ds = raw_test_ds.map(vectorize_text)
+
