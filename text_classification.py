@@ -10,16 +10,42 @@ from tensorflow.keras import losses
 from tensorflow.keras import preprocessing
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
-dataset = "/home/prog/Desktop/Translator/aclImdb"
+url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+
+#dataset = tf.keras.utils.get_file("aclImdb_v1", url,
+#                                    untar=True, cache_dir='.',
+#                                    cache_subdir='')
+#
+#dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb')
+
+
+dataset = os.getcwd() + "/aclImdb"
 dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb')
+
 train_dir = os.path.join(dataset_dir, 'train')
 
 batch_size = 32
 seed = 42
 
-raw_train_ds = tf.keras.preprocessing.text_dataset_from_directory('aclImdb/train', batch_size=batch_size, validation_split=0.2, subset='training',seed=seed)
-raw_val_ds = tf.keras.preprocessing.text_dataset_from_directory("aclImdb/train", batch_size=batch_size, validation_split=0.2, subset="validation", seed=seed)
-raw_test_ds = tf.keras.preprocessing.text_dataset_from_directory("aclImdb/test", batch_size=batch_size)
+raw_train_ds = tf.keras.preprocessing.text_dataset_from_directory(
+  'aclImdb/train',
+  batch_size=batch_size, 
+  validation_split=0.2, 
+  subset='training',
+  seed=seed)
+
+print("Label 0 corresponds to", raw_train_ds.class_names[0])
+print("Label 1 corresponds to", raw_train_ds.class_names[1])
+
+raw_val_ds = tf.keras.preprocessing.text_dataset_from_directory(
+  "aclImdb/train", 
+  batch_size=batch_size, 
+  validation_split=0.2, 
+  subset="validation", 
+  seed=seed)
+raw_test_ds = tf.keras.preprocessing.text_dataset_from_directory(
+  "aclImdb/test", 
+  batch_size=batch_size)
 
 def custom_standardization(input_data):
     lowercase = tf.strings.lower(input_data)
@@ -28,7 +54,7 @@ def custom_standardization(input_data):
 
 max_features = 10000
 sequence_length = 250
-
+#
 vectorize_layer = TextVectorization(
     standardize=custom_standardization,
     max_tokens=max_features,
